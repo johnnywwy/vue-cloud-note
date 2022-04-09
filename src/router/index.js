@@ -5,6 +5,7 @@ import NotebookList from '../components/NotebookList.vue'
 import NoteDetail from '../components/NoteDetail.vue'
 import TashDetail from '../components/TashDetail.vue'
 
+
 Vue.use(Router)
 
 export default new Router({
