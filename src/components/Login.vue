@@ -7,7 +7,7 @@
           <div class="form">
             <h3 @click="showRegister">创建账户</h3>
             <div v-show="isShowRegister" class="register">
-              <input type="text" v-model="register.username" placeholder="用户名">
+              <input type="text" v-model="register.username"  placeholder="用户名">
               <input type="password" v-model="register.password" placeholder="密码">
               <p v-bind:class="{error:register.isError}">{{ register.notice }}</p>
               <div class="button" @click="onRegister">创建账号</div>
@@ -30,8 +30,8 @@
 export default {
   data() {
     return {
-      isShowLogin: true,
-      isShowRegister: false,
+      isShowLogin: false,
+      isShowRegister: true,
       login: {
         username: 'johnny',
         password: '123456',
@@ -55,11 +55,63 @@ export default {
       this.isShowRegister = false
       this.isShowLogin = true
     },
+
+    validRegister() {
+      console.log(this.register.username)
+    },
     onRegister() {
-      console.log('注册')
+      let result1 = this.validUsername(this.register.username)
+
+      if (!result1.isValid) {
+        this.register.isError = true
+        this.register.notice = result1.notice
+        return
+      }
+      let result2 = this.validPassword(this.register.password)
+      if (!result2.isValid) {
+        this.register.isError = true
+        this.register.notice = result2.notice
+        return
+      }
+      this.register.isError = false
+      this.register.notice = ''
+      console.log('注册',
+        '用户名是:', this.register.username,
+        '密码是:', this.register.password
+      )
     },
     onLogin() {
-      console.log('登录')
+      let result1 = this.validUsername(this.login.username)
+
+      if (!result1.isValid) {
+        this.login.isError = true
+        this.login.notice = result1.notice
+        return
+      }
+      let result2 = this.validPassword(this.login.password)
+      if (!result2.isValid) {
+        this.login.isError = true
+        this.login.notice = result2.notice
+        return
+      }
+      this.login.isError = false
+      this.login.notice = ''
+      console.log('登录',
+        '用户名是:', this.login.username,
+        '密码是:', this.login.password
+      )
+    },
+    validUsername(username) {
+      return {
+        isValid: /^[a-zA-Z_0-9]{3,15}$/.test(username),
+        notice: '用户名必须是3-15位数，且仅限字母、数字、下划线'
+      }
+    },
+    validPassword(password) {
+      return {
+        isValid: /^.{6,16}$/.test(password),
+        notice: '密码长度在6-16位以内'
+      }
     }
   }
 
