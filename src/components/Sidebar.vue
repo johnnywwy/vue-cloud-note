@@ -65,7 +65,7 @@ export default {
   }
 
   > .logout {
-    border: 1px solid red;
+    //border: 1px solid red;
     position: absolute;
     bottom: 20px;
     width: 100%;
