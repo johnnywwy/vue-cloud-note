@@ -20,6 +20,7 @@
 
 <script>
 import Avatar from './Avatar'
+import request from '../helpers/request'
 
 export default {
   components: {
@@ -32,7 +33,10 @@ export default {
         console.log('点击了')
       },
       onLogout() {
-        console.log('登出')
+        request('/auth/logout')
+          .then(data => {
+            console.log(data)
+          })
       }
     }
   }
@@ -61,6 +65,7 @@ export default {
   }
 
   > .logout {
+    border: 1px solid red;
     position: absolute;
     bottom: 20px;
     width: 100%;

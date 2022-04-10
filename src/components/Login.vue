@@ -33,19 +33,17 @@
 <script>
 import request from '../helpers/request'
 
-request('/auth/login', 'POST',
-  {username: 'hunger2', password: '123456'})
+request('/auth')
   .then(data => {
     console.log(data)
   })
-
 export default {
   data() {
     return {
       isShowLogin: true,
       isShowRegister: false,
       login: {
-        username: 'johnny',
+        username: 'hunger',
         password: '123456',
         notice: '请输入用户名和密码',
         isError: false,
@@ -87,10 +85,15 @@ export default {
       }
       this.register.isError = false
       this.register.notice = ''
-      console.log('注册',
-        '用户名是:', this.register.username,
-        '密码是:', this.register.password
-      )
+
+      request('/auth/register', 'POST',
+        {
+          username: this.register.username,
+          password: this.register.password
+        })
+        .then(data => {
+          console.log(data)
+        })
     },
     onLogin() {
       let result1 = this.validUsername(this.login.username)
@@ -108,10 +111,14 @@ export default {
       }
       this.login.isError = false
       this.login.notice = ''
-      console.log('登录',
-        '用户名是:', this.login.username,
-        '密码是:', this.login.password
-      )
+      request('/auth/login', 'POST',
+        {
+          username: this.login.username,
+          password: this.login.password
+        })
+        .then(data => {
+          console.log(data)
+        })
     },
     validUsername(username) {
       return {
@@ -152,7 +159,7 @@ export default {
 .modal-container {
   width: 800px;
   height: 500px;
-  margin: 0px auto;
+  margin: 0 auto;
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
