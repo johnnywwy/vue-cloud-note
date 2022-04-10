@@ -31,12 +31,16 @@
 </template>
 
 <script>
-import request from '../helpers/request'
+import Api from '../apis/auth'
 
-request('/auth')
-  .then(data => {
-    console.log(data)
-  })
+Api.getInfo().then(data => {
+  console.log(data)
+})
+
+// request('/auth')
+//   .then(data => {
+//     console.log(data)
+//   })
 export default {
   data() {
     return {
@@ -86,14 +90,20 @@ export default {
       this.register.isError = false
       this.register.notice = ''
 
-      request('/auth/register', 'POST',
-        {
-          username: this.register.username,
-          password: this.register.password
-        })
-        .then(data => {
-          console.log(data)
-        })
+      Api.register({
+        username: this.register.username,
+        password: this.register.password
+      }).then(data => {
+        console.log(data)
+      })
+      // request('/auth/register', 'POST',
+      //   {
+      //     username: this.register.username,
+      //     password: this.register.password
+      //   })
+      //   .then(data => {
+      //     console.log(data)
+      //   })
     },
     onLogin() {
       let result1 = this.validUsername(this.login.username)
@@ -111,14 +121,21 @@ export default {
       }
       this.login.isError = false
       this.login.notice = ''
-      request('/auth/login', 'POST',
-        {
-          username: this.login.username,
-          password: this.login.password
-        })
-        .then(data => {
-          console.log(data)
-        })
+
+      Api.login({
+        username: this.login.username,
+        password: this.login.password
+      }).then(data => {
+        console.log(data)
+      })
+      // request('/auth/login', 'POST',
+      //   {
+      //     username: this.login.username,
+      //     password: this.login.password
+      //   })
+      //   .then(data => {
+      //     console.log(data)
+      //   })
     },
     validUsername(username) {
       return {

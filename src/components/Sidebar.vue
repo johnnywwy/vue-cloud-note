@@ -20,7 +20,7 @@
 
 <script>
 import Avatar from './Avatar'
-import request from '../helpers/request'
+import Api from '../apis/auth'
 
 export default {
   components: {
@@ -33,10 +33,9 @@ export default {
         console.log('点击了')
       },
       onLogout() {
-        request('/auth/logout')
-          .then(data => {
-            console.log(data)
-          })
+        Api.logout().then(data => {
+          console.log(data)
+        })
       }
     }
   }
