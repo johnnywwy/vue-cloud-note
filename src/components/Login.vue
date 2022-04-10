@@ -5,17 +5,19 @@
         <div class="modal-container">
           <div class="main"></div>
           <div class="form">
-            <h3>创建账户</h3>
-            <div v-show="true" class="register">
-              <input type="text" placeholder="用户名">
-              <input type="password" placeholder="密码">
-              <div class="button">创建账号</div>
+            <h3 @click="showRegister">创建账户</h3>
+            <div v-show="isShowRegister" class="register">
+              <input type="text" v-model="register.username" placeholder="用户名">
+              <input type="password" v-model="register.password" placeholder="密码">
+              <p v-bind:class="{error:register.isError}">{{ register.notice }}</p>
+              <div class="button" @click="onRegister">创建账号</div>
             </div>
-            <h3>登录</h3>
-            <div v-show="false" class="login">
-              <input type="text" placeholder="输入用户名">
-              <input type="password" placeholder="密码">
-              <div class="button"> 登录</div>
+            <h3 @click="ShowLogin">登录</h3>
+            <div v-show="isShowLogin" class="login">
+              <input type="text" v-model="login.username" placeholder="输入用户名">
+              <input type="password" v-model="login.password" placeholder="密码">
+              <p v-bind:class="{error:login.isError}">{{ login.notice }}</p>
+              <div class="button" @click="onLogin">登录</div>
             </div>
           </div>
         </div>
@@ -25,7 +27,43 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      isShowLogin: true,
+      isShowRegister: false,
+      login: {
+        username: 'johnny',
+        password: '123456',
+        notice: '请输入用户名和密码',
+        isError: false,
+      },
+      register: {
+        username: '',
+        password: '',
+        notice: '创建账户',
+        isError: false,
+      }
+    }
+  },
+  methods: {
+    showRegister() {
+      this.isShowRegister = true
+      this.isShowLogin = false
+    },
+    ShowLogin() {
+      this.isShowRegister = false
+      this.isShowLogin = true
+    },
+    onRegister() {
+      console.log('注册')
+    },
+    onLogin() {
+      console.log('登录')
+    }
+  }
+
+}
 </script>
 
 <style scoped lang="less">
