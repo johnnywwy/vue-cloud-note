@@ -32,6 +32,7 @@
 
 <script>
 import Api from '../apis/auth'
+import Bus from '../helpers/bus'
 
 Api.getInfo().then(data => {
   console.log(data)
@@ -87,23 +88,18 @@ export default {
         this.register.notice = result2.notice
         return
       }
-      this.register.isError = false
-      this.register.notice = ''
-
       Api.register({
         username: this.register.username,
         password: this.register.password
       }).then(data => {
-        console.log(data)
+        this.register.isError = false
+        this.register.notice = ''
+        Bus.$emit('userInfo', {username: this.login.username})
+        this.$router.push({path: '/notebooks'})
+      }).catch(data => {
+        this.register.isError = true
+        this.register.notice = data.msg
       })
-      // request('/auth/register', 'POST',
-      //   {
-      //     username: this.register.username,
-      //     password: this.register.password
-      //   })
-      //   .then(data => {
-      //     console.log(data)
-      //   })
     },
     onLogin() {
       let result1 = this.validUsername(this.login.username)
@@ -119,23 +115,19 @@ export default {
         this.login.notice = result2.notice
         return
       }
-      this.login.isError = false
-      this.login.notice = ''
-
       Api.login({
         username: this.login.username,
         password: this.login.password
       }).then(data => {
+        this.login.isError = false
+        this.login.notice = ''
+        Bus.$emit('userInfo', {username: this.login.username})
+        this.$router.push({path: '/notebooks'})
+      }).catch(data => {
         console.log(data)
+        this.login.isError = true
+        this.login.notice = data.msg
       })
-      // request('/auth/login', 'POST',
-      //   {
-      //     username: this.login.username,
-      //     password: this.login.password
-      //   })
-      //   .then(data => {
-      //     console.log(data)
-      //   })
     },
     validUsername(username) {
       return {

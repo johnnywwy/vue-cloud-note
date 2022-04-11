@@ -1,15 +1,31 @@
 <template>
-  <span :title="user.username">{{ slug }}</span>
+  <span :title="username">{{ slug }}</span>
 </template>
 
 <script>
+import Auth from '../apis/auth'
+import Bus from '../helpers/bus'
+
 export default {
   data() {
     return {
-      user: {
-        username: 'johnny'
-      },
-      slug: 'J'
+      username: '未登录',
+    }
+  },
+  created() {
+    Bus.$on('userInfo', user => {
+      this.username = user.username
+    })
+    Auth.getInfo()
+      .then(res => {
+        if (res.isLogin) {
+          this.username = res.data.username
+        }
+      })
+  },
+  computed: {
+    slug() {
+      return this.username.charAt(0)
     }
   }
 };
@@ -30,6 +46,6 @@ span {
   font-weight: bold;
   text-shadow: 1px 0 1px #795c19;
   font-size: 18px;
-  text-transform: uppercase;/*这个关键字强制所有字符被转换为大写。*/
+  text-transform: uppercase; /*这个关键字强制所有字符被转换为大写。*/
 }
 </style>

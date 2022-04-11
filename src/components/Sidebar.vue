@@ -34,7 +34,7 @@ export default {
       },
       onLogout() {
         Api.logout().then(data => {
-          console.log(data)
+          this.$router.push({path:'/login'})
         })
       }
     }
