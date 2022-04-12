@@ -70,22 +70,53 @@ export default {
       });
     },
     onEdit(notebook) {
-      let title = window.prompt('修改标题', notebook.title)
-      Notebooks.updateNotebook(notebook.id, {title})
-        .then(res => {
-          notebook.title = title
-          alert(res.msg)
-        })
+      this.$prompt('请输入邮箱', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+        inputErrorMessage: '邮箱格式不正确'
+      }).then(({ value }) => {
+        this.$message({
+          type: 'success',
+          message: '你的邮箱是: ' + value
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
+      // let title = window.prompt('修改标题', notebook.title)
+      // Notebooks.updateNotebook(notebook.id, {title})
+      //   .then(res => {
+      //     notebook.title = title
+      //     alert(res.msg)
+      //   })
     },
     onDelete(notebook) {
-      let isConfirm = window.confirm('你确定要删除吗？')
-      if (isConfirm) {
-        Notebooks.deleteNotebook(notebook.id)
-          .then(res => {
-            this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
-            alert(res.msg)
-          })
-      }
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+      // let isConfirm = window.confirm('你确定要删除吗？')
+      // if (isConfirm) {
+      //   Notebooks.deleteNotebook(notebook.id)
+      //     .then(res => {
+      //       this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
+      //       alert(res.msg)
+      //     })
+      // }
 
     }
 
