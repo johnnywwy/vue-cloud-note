@@ -1,7 +1,7 @@
 <template>
   <div id="sidebar">
     <Avatar></Avatar>
-    <div class="icons" @click="click">
+    <div class="icons">
       <router-link to="/note/1" title="笔记">
         <i class="iconfont icon-note"/>
       </router-link>
@@ -29,9 +29,6 @@ export default {
 
   data() {
     return {
-      click() {
-        console.log('点击了')
-      },
       onLogout() {
         Api.logout().then(data => {
           this.$router.push({path:'/login'})

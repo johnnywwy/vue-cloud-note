@@ -1,7 +1,7 @@
 <template>
   <div class="detail" id="notebook-list">
     <header>
-      <a href="#" class="btn" @click="onCreate">
+      <a href="#" class="btn" @click="onCreate" >
         <i class="iconfont icon-plus"/>
         新建笔记本
       </a>
@@ -52,17 +52,22 @@ export default {
   },
   methods: {
     onCreate() {
-      let title = window.prompt('创建笔记本：')
-      if (title.trim() === '') {
-        alert('标题不能为空！')
-        return
-      }
-      Notebooks.addNotebook({title})
-        .then(res => {
-          this.notebooks.unshift(res.data)
-          res.data.friendlyCreatedAt = friendlyDate(res.data.createdAt)
-          alert(res.msg)
-        })
+      this.$prompt('请输入邮箱', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+        inputErrorMessage: '邮箱格式不正确'
+      }).then(({ value }) => {
+        this.$message({
+          type: 'success',
+          message: '你的邮箱是: ' + value
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
     },
     onEdit(notebook) {
       let title = window.prompt('修改标题', notebook.title)
