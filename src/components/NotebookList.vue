@@ -1,7 +1,7 @@
 <template>
   <div class="detail" id="notebook-list">
     <header>
-      <a href="#" class="btn" @click="onCreate" >
+      <a href="#" class="btn" @click.stop.prevent="onCreate">
         <i class="iconfont icon-plus"/>
         新建笔记本
       </a>
@@ -52,74 +52,49 @@ export default {
   },
   methods: {
     onCreate() {
-      this.$prompt('请输入邮箱', '提示', {
+      this.$prompt('输入笔记本标题', '创建笔记本', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-        inputErrorMessage: '邮箱格式不正确'
-      }).then(({ value }) => {
-        this.$message({
-          type: 'success',
-          message: '你的邮箱是: ' + value
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消输入'
-        });
-      });
+        inputPattern: /^.{1,30}$/,
+        inputErrorMessage: '标题不能为空，且不超过30个字符'
+      }).then(({value}) => {
+        return Notebooks.addNotebook({title: value})
+      }).then(res => {
+        res.data.friendlyCreatedAt = friendlyDate(res.data.createdAt)
+        this.notebooks.unshift(res.data)
+        this.$message.success(res.msg)
+      })
     },
     onEdit(notebook) {
-      this.$prompt('请输入邮箱', '提示', {
+      let title = ' '
+      this.$prompt('输入笔记本标题', '修改笔记本', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-        inputErrorMessage: '邮箱格式不正确'
-      }).then(({ value }) => {
-        this.$message({
-          type: 'success',
-          message: '你的邮箱是: ' + value
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消输入'
-        });
-      });
-      // let title = window.prompt('修改标题', notebook.title)
-      // Notebooks.updateNotebook(notebook.id, {title})
-      //   .then(res => {
-      //     notebook.title = title
-      //     alert(res.msg)
-      //   })
+        inputPattern: /^.{1,30}$/,
+        inputValue: notebook.title,
+        inputErrorMessage: '标题不能为空，且不超过30个字符'
+      }).then(({value}) => {
+        console.log('value', value)
+        title = value
+        return Notebooks.updateNotebook(notebook.id, {title})
+      }).then(res => {
+        notebook.title = title
+        this.$message.success(res.msg)
+      })
     },
     onDelete(notebook) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      this.$confirm('确认删除该笔记吗?', '删除笔记本', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
-      // let isConfirm = window.confirm('你确定要删除吗？')
-      // if (isConfirm) {
-      //   Notebooks.deleteNotebook(notebook.id)
-      //     .then(res => {
-      //       this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
-      //       alert(res.msg)
-      //     })
-      // }
-
+        return Notebooks.deleteNotebook(notebook.id)
+      }).then(res => {
+        console.log('res', res)
+        this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
+        this.$message.success(res.msg)
+      })
     }
-
   }
 }
 </script>
