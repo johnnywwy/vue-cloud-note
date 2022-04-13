@@ -19,11 +19,15 @@ export default new Router({
       name: 'NotebookList',
       component: NotebookList
     }, {
-      path: '/note/:noteId',
+      path: '/note',
       name: 'NoteDetail',
       component: NoteDetail
     }, {
-      path: '/trash/:noteId',
+      path: '/trash',
+      name: 'TashDetail',
+      component: TashDetail
+    }, {
+      path: '/trash',
       name: 'TashDetail',
       component: TashDetail
     }
