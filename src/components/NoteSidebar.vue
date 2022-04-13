@@ -6,7 +6,10 @@
         我的笔记本1 <i class="iconfont icon-down"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="notebook in notebooks" command="notebook.id">{{ notebook.title }}</el-dropdown-item>
+        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id" :key="notebook.id">{{
+            notebook.title
+          }}
+        </el-dropdown-item>
         <el-dropdown-item command="trash">回收站</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -27,29 +30,32 @@
 
 
 <script>
+import Notebooks from '../apis/notebooks'
+import Notes from '../apis/notes'
+
+window.Notes = Notes
+
 export default {
+  created() {
+    Notebooks.getAll()
+      .then(res => {
+        this.notebooks = res.data
+      })
+  },
+
   data() {
     return {
-      notebooks: [
-        {
-          id: 1,
-          title: 'hello1'
-        },
-        {
-          id: 2,
-          title: 'hello2',
-          updatedAtFriendly: '3分钟'
-        },
-      ],
+      notebooks: [],
       notes: [
         {
           id: 11,
-          title: '第1个笔记'
+          title: '第1个笔记',
+          updatedAtFriendly: '刚刚'
         },
         {
           id: 12,
           title: '第2个笔记',
-          updatedAtFriendly: '第2个笔记'
+          updatedAtFriendly: '3分钟前'
         }
       ]
     };
@@ -58,8 +64,14 @@ export default {
     addNote() {
       console.log('add');
     },
-    handleCommand(cmd) {
-      console.log(cmd);
+    handleCommand(notebookId) {
+      if (notebookId !== 'trash') {
+        Notes.getAll({notebookId})
+          .then(res => {
+            console.log(res)
+            this.notes = res.data
+          })
+      }
     }
   }
 };
