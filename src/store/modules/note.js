@@ -9,9 +9,9 @@ const getters = {
   notes: state => state.notes || [],
 
   curNote: state => {
-    if (!Array.isArray(state.notes)) return {}
-    if (!state.curBookId) return state.notes[0]
-    return state.notebooks.find(note => note.id == state.curNoteId) || {}
+    if(!Array.isArray(state.notes)) return {}
+    if(!state.curNoteId) return state.notes[0] || {}
+    return state.notes.find(note => note.id == state.curNoteId) || {}
   }
 }
 const mutations = {

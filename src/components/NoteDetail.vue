@@ -65,8 +65,7 @@ export default {
     ]),
 
     previewContent() {
-      this.curNote.content = this.curNote.content || ''
-      return md.render(this.curNote.content)
+      return md.render(this.curNote.content||'')
     }
 
   },
@@ -94,8 +93,9 @@ export default {
     }
   },
 
-  beforeRouteUpdate (to, from, next) {
-    this.setCurNote({ curNoteId: to.query.noteId})
+  beforeRouteUpdate(to, from, next) {
+    this.setCurNote({curNoteId:to.query.noteId})
+    // this.curNote = this.notes.find(note => note.id === parseInt(to.query.noteId)) || {}
     next()
   }
 

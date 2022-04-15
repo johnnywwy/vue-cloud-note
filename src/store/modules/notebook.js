@@ -9,8 +9,8 @@ const getters = {
   notebooks: state => state.notebooks || [],
   curBook: state => {
     if (!Array.isArray(state.notebooks)) return {}
-    if (!state.curBookId) return state.notebooks[0]
-    return state.notebooks.find(notebooks => notebooks.id == state.curBookId) || {}
+    if (!state.curBookId) return state.notebooks[0] || {}
+    return state.notebooks.find(notebook => notebook.id == state.curBookId) || {}
   }
 }
 const mutations = {
@@ -34,10 +34,12 @@ const mutations = {
   }
 }
 const actions = {
-  getNotebooks({commit}) {
-    return Notebooks.getAll().then(res => {
-      commit('setNotebooks', {notebooks: res.data})
-    })
+  getNotebooks({ commit, state }) {
+    if(state.notebooks !== null) return Promise.resolve()
+    return Notebooks.getAll()
+      .then(res => {
+        commit('setNotebooks', { notebooks: res.data })
+      })
   },
 
   addNotebook({commit}, payload) {
