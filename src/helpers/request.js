@@ -23,17 +23,11 @@ export default function request(url, type = 'GET', date = {}) {
         if (res.status === 200) {
           resolve(res.data)
         } else {
-          Message({
-            type: 'error',
-            message: res.data.msg
-          })
+          Message.error(res.data.msg)
           reject(res.data)
         }
       }).catch(err => {
-        Message({
-          type: 'error',
-          message: '网络异常'
-        })
+        Message.error('网络异常')
         reject({msg: '网络异常'})
       })
     }
