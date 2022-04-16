@@ -3,13 +3,18 @@ import Router from 'vue-router'
 import Login from '../components/Login'
 import NotebookList from '../components/NotebookList.vue'
 import NoteDetail from '../components/NoteDetail.vue'
-import TashDetail from '../components/TashDetail.vue'
+import TrashDetail from '../components/TrashDetail.vue'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/',
+      alias: '/notebooks',
+      component: NotebookList
+    },
     {
       path: '/login',
       name: 'Login',
@@ -24,12 +29,8 @@ export default new Router({
       component: NoteDetail
     }, {
       path: '/trash',
-      name: 'TashDetail',
-      component: TashDetail
-    }, {
-      path: '/trash',
-      name: 'TashDetail',
-      component: TashDetail
+      name: 'TrashDetail',
+      component: TrashDetail
     }
   ]
 })

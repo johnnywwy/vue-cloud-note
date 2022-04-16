@@ -14,13 +14,13 @@
                 <div class="button" @click="onRegister">创建账号</div>
               </div>
             </transition>
-            <h3 @click="ShowLogin">登录</h3>
+            <h3 @click="showLogin">登录</h3>
             <transition name="slide">
               <div v-bind:class="{show: isShowLogin}" class="login">
                 <input type="text" v-model="login.username" placeholder="输入用户名">
-                <input type="password" v-model="login.password" placeholder="密码">
-                <p v-bind:class="{error:login.isError}">{{ login.notice }}</p>
-                <div class="button" @click="onLogin">登录</div>
+                <input type="password" v-model="login.password" @keyup.enter="onLogin" placeholder="密码">
+                <p v-bind:class="{error: login.isError}"> {{ login.notice }}</p>
+                <div class="button" @click="onLogin"> 登录</div>
               </div>
             </transition>
           </div>
@@ -31,12 +31,8 @@
 </template>
 
 <script>
-import Auth from '../apis/auth'
-import Bus from '../helpers/bus'
 
-Auth.getInfo().then(data => {
-  console.log(data)
-})
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   data() {
@@ -46,99 +42,81 @@ export default {
       login: {
         username: 'johnny',
         password: '123456',
-        notice: '请输入用户名和密码',
-        isError: false,
+        notice: '输入用户名和密码',
+        isError: false
       },
       register: {
         username: '',
         password: '',
-        notice: '创建账户',
-        isError: false,
+        notice: '创建账号后，请记住用户名和密码',
+        isError: false
       }
     }
   },
   methods: {
-    showRegister() {
-      this.isShowRegister = true
-      this.isShowLogin = false
-    },
-    ShowLogin() {
-      this.isShowRegister = false
-      this.isShowLogin = true
-    },
+    ...mapActions({
+      loginUser: 'login',
+      registerUser: 'register'
+    }),
 
-    validRegister() {
-      console.log(this.register.username)
+    showLogin() {
+      this.isShowLogin = true
+      this.isShowRegister = false
+    },
+    showRegister() {
+      this.isShowLogin = false
+      this.isShowRegister = true
     },
     onRegister() {
-      let result1 = this.validUsername(this.register.username)
+      if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.register.username)) {
+        this.register.isError = true
+        this.register.notice = '用户名3~15个字符，仅限于字母数字下划线中文'
+        return
+      }
+      if (!/^.{6,16}$/.test(this.register.password)) {
+        this.register.isError = true
+        this.register.notice = '密码长度为6~16个字符'
+        return
+      }
 
-      if (!result1.isValid) {
-        this.register.isError = true
-        this.register.notice = result1.notice
-        return
-      }
-      let result2 = this.validPassword(this.register.password)
-      if (!result2.isValid) {
-        this.register.isError = true
-        this.register.notice = result2.notice
-        return
-      }
-      Auth.register({
+      this.registerUser({
         username: this.register.username,
         password: this.register.password
-      }).then(data => {
+      }).then(() => {
         this.register.isError = false
         this.register.notice = ''
-        Bus.$emit('userInfo', {username: this.login.username})
-        this.$router.push({path: '/notebooks'})
+        this.$router.push({path: 'notebooks'})
       }).catch(data => {
         this.register.isError = true
         this.register.notice = data.msg
       })
     },
-    onLogin() {
-      let result1 = this.validUsername(this.login.username)
 
-      if (!result1.isValid) {
+    onLogin() {
+      if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.login.username)) {
         this.login.isError = true
-        this.login.notice = result1.notice
+        this.login.notice = '用户名3~15个字符，仅限于字母数字下划线中文'
         return
       }
-      let result2 = this.validPassword(this.login.password)
-      if (!result2.isValid) {
+      if (!/^.{6,16}$/.test(this.login.password)) {
         this.login.isError = true
-        this.login.notice = result2.notice
+        this.login.notice = '密码长度为6~16个字符'
         return
       }
-      Auth.login({
+
+      this.loginUser({
         username: this.login.username,
         password: this.login.password
-      }).then(data => {
+      }).then(() => {
         this.login.isError = false
         this.login.notice = ''
-        Bus.$emit('userInfo', {username: this.login.username})
-        this.$router.push({path: '/notebooks'})
+        this.$router.push({path: 'notebooks'})
       }).catch(data => {
-        console.log(data)
         this.login.isError = true
         this.login.notice = data.msg
       })
-    },
-    validUsername(username) {
-      return {
-        isValid: /^[a-zA-Z_0-9]{3,15}$/.test(username),
-        notice: '用户名必须是3-15位数，且仅限字母、数字、下划线'
-      }
-    },
-    validPassword(password) {
-      return {
-        isValid: /^.{6,16}$/.test(password),
-        notice: '密码长度在6-16位以内'
-      }
     }
   }
-
 }
 </script>
 

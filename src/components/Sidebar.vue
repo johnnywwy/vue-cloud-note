@@ -20,22 +20,21 @@
 
 <script>
 import Avatar from './Avatar'
-import Api from '../apis/auth'
+import {mapActions} from 'vuex'
 
 export default {
   components: {
     Avatar
   },
-
-  data() {
-    return {
-      onLogout() {
-        Api.logout().then(data => {
-          this.$router.push({path:'/login'})
-        })
-      }
+  methods: {
+    ...mapActions([
+      'logout'
+    ]),
+    onLogout() {
+      this.logout({path: '/login'})
     }
   }
+
 }
 </script>
 

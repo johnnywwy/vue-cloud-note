@@ -37,67 +37,89 @@
 </template>
 
 <script>
-import Auth from '../apis/auth'
 import MarkdownIt from 'markdown-it'
-import Trash from '../apis/trash'
-
+import {mapActions, mapGetters, mapMutations} from 'vuex'
 
 let md = new MarkdownIt()
 
 export default {
-  name: 'Login',
-  data() {
-    return {
-      msg: '回收站笔记详情页',
-      curTrashNote: {
-        id: 3,
-        title: '我的笔记',
-        content: '## hello world',
-        createdAtFriendly: '3小时前',
-        updatedAtFriendly: '刚刚'
-      },
-      belongTo: '我的笔记本',
-      trashNotes: [
-        {
-          id: 1,
-          title: '我的笔记1',
-          content: '## hello world',
-          createdAtFriendly: '3小时前',
-          updatedAtFriendly: '刚刚'
-        }, {
-          id: 2,
-          title: '我的笔记2',
-          content: '## hello world',
-          createdAtFriendly: '4小时前',
-          updatedAtFriendly: '刚刚'
-        }
+  data () {
+    return {}
+  },
 
-      ]
-
-    }
+  created() {
+    this.checkLogin({ path: '/login' })
+    this.getNotebooks()
+    this.getTrashNotes()
+      .then(() => {
+        this.setCurTrashNote({ curTrashNoteId: this.$route.query.noteId })
+        this.$router.replace({
+          path: '/trash',
+          query: { noteId: this.curTrashNote.id }
+        })
+      })
   },
 
   computed: {
-    compiledMarkdown() {
-      return md.render(this.curTrashNote.content || '')
+    ...mapGetters([
+      'trashNotes',
+      'curTrashNote',
+      'belongTo'
+    ]),
+
+    compiledMarkdown () {
+      return md.render(this.curTrashNote.content||'')
     }
   },
+
   methods: {
-    onRevert() {
-      console.log('onRevert')
-    },
+    ...mapMutations([
+      'setCurTrashNote'
+    ]),
+
+    ...mapActions([
+      'checkLogin',
+      'deleteTrashNote',
+      'revertTrashNote',
+      'getTrashNotes',
+      'getNotebooks'
+    ]),
+
     onDelete() {
-      console.log('onDelete')
+      this.$confirm('删除后将无法恢复', '确定删除？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return this.deleteTrashNote({ noteId: this.curTrashNote.id })
+      }).then(() => {
+        console.log('delete success')
+        this.setCurTrashNote()
+        this.$router.replace({
+          path: '/trash',
+          query: { noteId: this.curTrashNote.id }
+        })
+      })
+
+    },
+
+    onRevert() {
+      this.revertTrashNote({ noteId: this.curTrashNote.id })
+        .then(() => {
+          this.setCurTrashNote()
+          this.$router.replace({
+            path: '/trash',
+            query: { noteId: this.curTrashNote.id }
+          })
+        })
     }
   },
-  created() {
-    Auth.getInfo()
-      .then(res => {
-        if (!res.isLogin) {
-          this.$router.push({path: '/login'})
-        }
-      })
+
+  beforeRouteUpdate (to, from, next) {
+    this.setCurTrashNote({ curTrashNoteId: to.query.noteId})
+    next()
   }
+
 }
 </script>
 

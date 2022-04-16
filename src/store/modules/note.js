@@ -31,7 +31,7 @@ const mutations = {
     state.notes = state.notes
       .filter(note => note.id != payload.noteId)
   },
-  setCurNote(state, payload) {
+  setCurNote(state, payload={}) {
     state.curNoteId = payload.curNoteId
   }
 }
