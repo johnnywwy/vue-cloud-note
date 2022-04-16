@@ -17,17 +17,13 @@ export default new Router({
     },
     {
       path: '/login',
-      component: () => import('../components/Login')
+      component:  () => import('../components/Login')
     }, {
       path: '/note',
-      component: () => import('../components/NoteDetail.vue')
+      component:  () => import('../components/NoteDetail.vue')
     }, {
       path: '/trash',
-      component: () => import('../components/TrashDetail.vue')
-    }, {
-      path: '*',
-      redirect: '/notebooks'
+      component:  () => import('../components/TrashDetail.vue')
     }
-
   ]
 })
