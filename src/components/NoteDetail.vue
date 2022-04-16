@@ -28,11 +28,11 @@
 </template>
 
 <script>
-import Auth from '../apis/auth'
+
 import NoteSidebar from './NoteSidebar'
 import _ from 'lodash'
 import MarkdownIt from 'markdown-it'
-import {mapState, mapGetters, mapActions, mapMutations} from 'vuex'
+import {mapGetters, mapActions, mapMutations} from 'vuex'
 
 let md = new MarkdownIt()
 
@@ -47,12 +47,8 @@ export default {
     }
   },
   created() {
-    Auth.getInfo()
-      .then(res => {
-        if (!res.isLogin) {
-          this.$router.push({path: '/login'})
-        }
-      })
+    this.checkLogin({path: '/login'})
+
   },
   computed: {
     ...mapMutations([
@@ -65,7 +61,7 @@ export default {
     ]),
 
     previewContent() {
-      return md.render(this.curNote.content||'')
+      return md.render(this.curNote.content || '')
     }
 
   },
@@ -73,7 +69,8 @@ export default {
   methods: {
     ...mapActions([
       'updateNote',
-      'deleteNote'
+      'deleteNote',
+      'checkLogin'
     ]),
 
     onUpdateNote: _.debounce(function () {
@@ -94,8 +91,7 @@ export default {
   },
 
   beforeRouteUpdate(to, from, next) {
-    this.setCurNote({curNoteId:to.query.noteId})
-    // this.curNote = this.notes.find(note => note.id === parseInt(to.query.noteId)) || {}
+    this.$store.commit('setCurNote', {curNoteId: to.query.noteId})
     next()
   }
 
@@ -103,6 +99,8 @@ export default {
 </script>
 
 <style scoped lang="less">
+@import url(../assets/css/note-detail.less);
+
 #note {
   display: flex;
   align-items: stretch;
@@ -113,84 +111,6 @@ export default {
 ::-webkit-scrollbar {
 
   display: none;
-}
-
-.note-detail {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-
-  .note-detail-ct {
-    height: 100%;
-
-  }
-
-  .note-empty {
-    font-size: 50px;
-    color: #ccc;
-    text-align: center;
-    margin-top: 100px;
-  }
-
-  .note-bar {
-    padding: 4px 20px;
-    border-bottom: 1px solid #eee;
-
-    &:after {
-      content: '';
-      display: block;
-      clear: both;
-    }
-
-    span {
-      font-size: 12px;
-      color: #999;
-      margin-right: 4px;
-    }
-
-    .iconfont {
-      float: right;
-      margin-left: 4px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-  }
-
-  .note-title {
-    input, span {
-      display: inline-block;
-      width: 100%;
-      border: none;
-      outline: none;
-      font-size: 18px;
-      padding: 10px 20px;
-    }
-  }
-
-  .editor {
-    height: ~"calc(100% - 72px)";
-    position: relative;
-  }
-
-  textarea, .preview {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-  }
-
-  textarea {
-    border: none;
-    resize: none;
-    outline: none;
-    font-size: 14px;
-    font-family: 'Monaco', courier, monospace;
-  }
-
-  code {
-    color: #f66;
-  }
 }
 
 </style>

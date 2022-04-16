@@ -31,17 +31,13 @@
 </template>
 
 <script>
-import Api from '../apis/auth'
+import Auth from '../apis/auth'
 import Bus from '../helpers/bus'
 
-Api.getInfo().then(data => {
+Auth.getInfo().then(data => {
   console.log(data)
 })
 
-// request('/auth')
-//   .then(data => {
-//     console.log(data)
-//   })
 export default {
   data() {
     return {
@@ -88,7 +84,7 @@ export default {
         this.register.notice = result2.notice
         return
       }
-      Api.register({
+      Auth.register({
         username: this.register.username,
         password: this.register.password
       }).then(data => {
@@ -115,7 +111,7 @@ export default {
         this.login.notice = result2.notice
         return
       }
-      Api.login({
+      Auth.login({
         username: this.login.username,
         password: this.login.password
       }).then(data => {
