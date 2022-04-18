@@ -150,14 +150,16 @@ export default {
   font-family: Helvetica, Arial, sans-serif;
   display: flex;
 
+
   .main {
     flex: 1;
-    background: #36bc64 url(//cloud.hunger-valley.com/17-12-13/38476998.jpg-middle) center center no-repeat;
     background-size: contain;
+    background: #36bc64 url(//cloud.hunger-valley.com/17-12-13/38476998.jpg-middle) center center no-repeat;
+
   }
 
   .form {
-    width: 270px;
+    //width: 270px;
     border-left: 1px solid #ccc;
 
     h3 {
